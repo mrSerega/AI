@@ -63,11 +63,31 @@ class Prolog:
         # results = formulaResult.split(',')
         # for res in results:
         #     addFact(res)
-    
-    def getAnswer(self, questionName, arg1, arg2):
-        if debug: print ('[getAnswer] question: {}, arg1: {}, arg2: {}'.format(questionName,arg1,arg2))
-        relation = self.relations[questionName]
-        return relation.isConnected(arg1, arg2)
+
+    def getAnswer(self, questionName, arg1, arg2, isVar1 = False, isVar2 = False, isReturn1 = False, isReturn2 = False):
+        if isVar1 and not isVar2 :
+            ans = []
+            tmp = self.relations[questionName].storage
+            for key in tmp:
+                if arg2 in tmp[key]: ans.append([key,arg2])
+            return ans
+        elif not isVar1 and isVar2:
+            ans = []
+            tmp = self.relations[questionName].storage
+            for val in tmp[arg1]: 
+                ans.append([arg1, val])
+            return ans
+        elif isVar1 and isVar2:
+            ans = []
+            tmp = self.relations[questionName].storage
+            for key in tmp:
+                for val in tmp[key]:
+                    ans.append([key, val])
+            return ans
+        else:
+            if debug: print ('[getAnswer] question: {}, arg1: {}, arg2: {}'.format(questionName,arg1,arg2))
+            relation = self.relations[questionName]
+            return relation.isConnected(arg1, arg2)
     
 if __name__ == '__main__':
     file = open('test.txt','r')
@@ -79,3 +99,6 @@ if __name__ == '__main__':
 
     if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
     if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",True, False)))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',False,True)))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',True, True)))
