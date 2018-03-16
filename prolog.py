@@ -1,6 +1,6 @@
 import processor
 
-debug = True
+debug = False
 
 class Prolog:
     
@@ -124,10 +124,12 @@ if __name__ == '__main__':
     prolog = Prolog()
 
     for line in file:
-        try:
-            print ("returned value={} for line={}".format(prolog.parseLine(line),line))
-        except Exception:
-            print("Some error occured during parsing line {}".format(line))
+        if not debug:
+            try:
+                print ("returned value={} for line={}".format(prolog.parseLine(line),line))
+            except Exception:
+                print("Some error occured during parsing line {}".format(line))
+        else: print(prolog.parseLine(line))
 
 
     if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
@@ -136,3 +138,4 @@ if __name__ == '__main__':
     if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
     if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
     if debug: print ('[main] {}'.format(prolog.relations))
+    
