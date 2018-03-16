@@ -1,2 +1,6 @@
-P('x') //hello
+P('x')
 P('y')
+?P('x')
+?P('a')
+?P('y')
+exists(x, y : P(x,y)) -> Q(x)

@@ -1,5 +1,7 @@
 import processor
 
+debug = True
+
 class Prolog:
     
     relations = dict()
@@ -10,14 +12,11 @@ class Prolog:
     
     def parceLine(self, line):
         line = line.replace(' ','')
-        if len(string) < 1: return 
-        if string[0] == '#': return
-        if string[0] == '?': self.parceQuestion(line[1:])
-        if ('->') in line: self.parceFormula(line)
-        self.parceFact(line)
-    
-    def parce():
-        pass
+        if len(line) < 1: return 
+        if line[0] == '#': return
+        if line[0] == '?': return self.parceQuestion(line[1:])
+        if ('->') in line: return self.addFormula(line)
+        return self.addFact(line)
     
     def parceQuestion(self, question):
         questionLine = question.split('(')
@@ -25,8 +24,8 @@ class Prolog:
         questionValue = questionLine[1].split(')')[0]
         questionArguments = questionValue.split(',')
         if len(questionValue) == 0: print('Error: no arguments in question')
-        elif len(questionValue) == 1: self.getAnswer(questionName, questionArguments[0], questionArguments[0])
-        elif len(questionValue) == 2: self.getAnswer(questionName, questionArguments[0], questionArguments[1])
+        elif len(questionArguments) == 1: return self.getAnswer(questionName, questionArguments[0], questionArguments[0])
+        elif len(questionArguments) == 2: return self.getAnswer(questionName, questionArguments[0], questionArguments[1])
         else: print('Error: to many arguments in question')
     
     def addFact(self, fact):
@@ -41,18 +40,42 @@ class Prolog:
         else: print('Error: to many arguments in facts')
             
     def addRelation(self, relation, firstNode, secondNode):
-        if relation in relations:
-            self.relations[relation].addEdge(firstNode, secondNode)
-		else:
-            self.relations[relation] = Graph()
+        if debug: print('[addRelation] relation: {}, first: {}, second: {}'.format(relation, firstNode, secondNode))
+        if not relation in self.relations:
+            self.relations[relation] = processor.Graph()
+        self.relations[relation].addEdge(firstNode, secondNode)
     
     def addFormula(self, form):
-        pass
+        if debug: print('[addFormula] {}'.format(form))
+
+        formulaStructure = form.split('->')
+        formulaCondition = formulaStructure[0]
+        fomulaResult = formulaStructure[1]
+        if debug: print ('[addFormula] condition: {}'.format(formulaCondition))
+        if debug: print ('[addFormula] result: {}'.format(fomulaResult))
+        conditionStructure = formulaCondition.split(':')
+        formulaVars = conditionStructure[0][1:]
+        formulaVars = formulaVars.split(',')
+        conditionCondition = conditionStructure[1][:-1]
+        answer = self.parceQuestion(conditionCondition)
+        # for i, var in enumerate(formulaVars):
+        #     var = answer[i]
+        # results = formulaResult.split(',')
+        # for res in results:
+        #     addFact(res)
     
-    def getAnswer(self, question):
-        pass
+    def getAnswer(self, questionName, arg1, arg2):
+        if debug: print ('[getAnswer] question: {}, arg1: {}, arg2: {}'.format(questionName,arg1,arg2))
+        relation = self.relations[questionName]
+        return relation.isConnected(arg1, arg2)
     
 if __name__ == '__main__':
     file = open('test.txt','r')
-    print(file.read().split('\n'))
-    
+
+    prolog = Prolog()
+
+    for line in file:
+        print (prolog.parceLine(line))  
+
+    if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
+    if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))

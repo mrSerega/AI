@@ -5,7 +5,8 @@ class Graph:
 	costs = dict()
 
 	def __init__(self):
-		print ('kek')
+		# print ('kek')
+		pass
 
 	def addNode(self, nodeName):
 		try:
@@ -50,15 +51,15 @@ class Graph:
 			pass
 
 	def isConnected(self, firstNode, secondNode):
-        try:
-            self.storage[firstNode]
-        except:
-            return False
+		try:
+			self.storage[firstNode]
+		except:
+			return False
             
-        try:
-            self.storage[secondeNode]
-        except:
-            return False
+		try:
+			self.storage[secondNode]
+		except:
+			return False
             
 		marks = []
 		return self.BFS(firstNode, secondNode, marks)
