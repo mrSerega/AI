@@ -18,14 +18,14 @@ class Prolog:
         if ('->') in line: return self.addFormula(line)
         return self.addFact(line)
     
-    def parseQuestion(self, question):
+    def parseQuestion(self, question, vars = []):
         questionLine = question.split('(')
         questionName = questionLine[0]
         questionValue = questionLine[1].split(')')[0]
         questionArguments = questionValue.split(',')
         if len(questionValue) == 0: print('Error: no arguments in question')
-        elif len(questionArguments) == 1: return self.getAnswer(questionName, questionArguments[0], questionArguments[0])
-        elif len(questionArguments) == 2: return self.getAnswer(questionName, questionArguments[0], questionArguments[1])
+        elif len(questionArguments) == 1: return self.getAnswer(questionName, questionArguments[0], questionArguments[0], vars)
+        elif len(questionArguments) == 2: return self.getAnswer(questionName, questionArguments[0], questionArguments[1], vars)
         else: print('Error: to many arguments in question')
     
     def addFact(self, fact):
@@ -59,30 +59,40 @@ class Prolog:
         conditionCondition = conditionStructure[1][:-1]
         answer = self.parseQuestion(conditionCondition)
         if 'exists' in formulaCondition:
+            formulaCondition = formulaCondition.replace('exists','')
+            formulaCondition = formulaCondition[1:-1]
+            if debug: print('[addFormula] condition2: {}'.format(formulaCondition))
+            formulaCondition = formulaCondition.split(':')
+            vars = formulaCondition[0].split(',')
+            questions = formulaCondition[1].split(',')
+            if debug: print('[addFormula] vars: {}'.format(vars))
+            if debug: print('[addFormula] questions:'.format(questions))
+            #for question in questions:
+                #self.parseQuestion(question, vars)
         elif 'forall' in formulaCondition:
-            print 'Error: forall comingsoon'
+            print ('Error: forall coming soon')
         else:
-            print 'Error: unknown predicat'
+            print ('Error: unknown predicat')
         # for i, var in enumerate(formulaVars):
         #     var = answer[i]
         # results = formulaResult.split(',')
         # for res in results:
         #     addFact(res)
 
-    def getAnswer(self, questionName, arg1, arg2, isVar1 = False, isVar2 = False, isReturn1 = False, isReturn2 = False):
-        if isVar1 and not isVar2 :
+    def getAnswer(self, questionName, arg1, arg2, vars):
+        if arg1 in vars and arg2 not in vars :
             ans = []
             tmp = self.relations[questionName].storage
             for key in tmp:
                 if arg2 in tmp[key]: ans.append([key,arg2])
             return ans
-        elif not isVar1 and isVar2:
+        elif arg1 not in vars and arg2 in vars:
             ans = []
             tmp = self.relations[questionName].storage
             for val in tmp[arg1]: 
                 ans.append([arg1, val])
             return ans
-        elif isVar1 and isVar2:
+        elif arg1 in vars and arg2 in vars:
             ans = []
             tmp = self.relations[questionName].storage
             for key in tmp:
@@ -104,6 +114,6 @@ if __name__ == '__main__':
 
     if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
     if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",True, False)))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',False,True)))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',True, True)))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
+    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
