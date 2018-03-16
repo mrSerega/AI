@@ -28,15 +28,19 @@ class Prolog:
         elif len(questionArguments) == 2: return self.getAnswer(questionName, questionArguments[0], questionArguments[1], vars)
         else: print('Error: to many arguments in question')
     
-    def addFact(self, fact):
+    def addFact(self, fact, vars = []):
         factLine = fact.split('(')
         factName = factLine[0]
         factValue = factLine[1].split(')')[0]
         factArgs = factValue.split(',')
         numOfArgs = len(factArgs)
         if(numOfArgs == 0): print('Error: no arguments in fact')
-        elif(numOfArgs == 1): self.addRelation(factName,factArgs[0],factArgs[0])
-        elif(numOfArgs == 2): self.addRelation(factName,factArgs[0],factArgs[1])
+        elif(numOfArgs == 1):
+            if vars: self.addRelation(factName,vars[0],vars[0])
+            else: self.addRelation(factName,factArgs[0],factArgs[0])
+        elif(numOfArgs == 2):
+            if vars: self.addRelation(factName,vars[0],vars[1])
+            else: self.addRelation(factName,factArgs[0],factArgs[1])
         else: print('Error: to many arguments in facts')
             
     def addRelation(self, relation, firstNode, secondNode):
@@ -58,21 +62,31 @@ class Prolog:
         formulaVars = formulaVars.split(',')
         conditionCondition = conditionStructure[1][:-1]
         answer = self.parseQuestion(conditionCondition)
+        pairs = None
         if 'exists' in formulaCondition:
             formulaCondition = formulaCondition.replace('exists','')
             formulaCondition = formulaCondition[1:-1]
             if debug: print('[addFormula] condition2: {}'.format(formulaCondition))
             formulaCondition = formulaCondition.split(':')
             vars = formulaCondition[0].split(',')
-            questions = formulaCondition[1].split(',')
+            question = formulaCondition[1]
             if debug: print('[addFormula] vars: {}'.format(vars))
-            if debug: print('[addFormula] questions:'.format(questions))
-            #for question in questions:
-                #self.parseQuestion(question, vars)
+            if debug: print('[addFormula] questions {}:'.format(question))
+            pairs = self.parseQuestion(question,vars)
         elif 'forall' in formulaCondition:
             print ('Error: forall coming soon')
         else:
             print ('Error: unknown predicat')
+        results = fomulaResult.split('),')
+        results_last = results[-1]
+        results = results[:-1]
+        for index, val in enumerate(results):
+            results[index] += ')'
+        results.append(results_last)
+        if debug: print ('[addFormula] results2: {}'.format(results))
+        for result in results:
+            for pair in pairs:
+                self.addFact(result, pair)
         # for i, var in enumerate(formulaVars):
         #     var = answer[i]
         # results = formulaResult.split(',')
@@ -117,3 +131,4 @@ if __name__ == '__main__':
     if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
     if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
     if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
+    if debug: print ('[main] {}'.format(prolog.relations))
