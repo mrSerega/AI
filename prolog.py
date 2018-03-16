@@ -6,19 +6,19 @@ class Prolog:
     
     relations = dict()
     
-    def parceCode(self, code):
+    def parseCode(self, code):
         __code = code.split('\n')
-        for line in __code: self.parceLine(line)
+        for line in __code: self.parseLine(line)
     
-    def parceLine(self, line):
+    def parseLine(self, line):
         line = line.replace(' ','')
         if len(line) < 1: return 
         if line[0] == '#': return
-        if line[0] == '?': return self.parceQuestion(line[1:])
+        if line[0] == '?': return self.parseQuestion(line[1:])
         if ('->') in line: return self.addFormula(line)
         return self.addFact(line)
     
-    def parceQuestion(self, question):
+    def parseQuestion(self, question):
         questionLine = question.split('(')
         questionName = questionLine[0]
         questionValue = questionLine[1].split(')')[0]
@@ -57,7 +57,12 @@ class Prolog:
         formulaVars = conditionStructure[0][1:]
         formulaVars = formulaVars.split(',')
         conditionCondition = conditionStructure[1][:-1]
-        answer = self.parceQuestion(conditionCondition)
+        answer = self.parseQuestion(conditionCondition)
+        if 'exists' in formulaCondition:
+        elif 'forall' in formulaCondition:
+            print 'Error: forall comingsoon'
+        else:
+            print 'Error: unknown predicat'
         # for i, var in enumerate(formulaVars):
         #     var = answer[i]
         # results = formulaResult.split(',')
@@ -95,7 +100,7 @@ if __name__ == '__main__':
     prolog = Prolog()
 
     for line in file:
-        print (prolog.parceLine(line))  
+        print (prolog.parseLine(line))  
 
     if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
     if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
