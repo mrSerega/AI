@@ -39,7 +39,11 @@ class Prolog:
             if vars: self.addRelation(factName,vars[0],vars[0])
             else: self.addRelation(factName,factArgs[0],factArgs[0])
         elif(numOfArgs == 2):
-            if vars: self.addRelation(factName,vars[0],vars[1])
+            if vars:
+                if (vars[0]==vars[1]):
+                    self.addRelation('R',vars[0],vars[0])
+                self.addRelation(factName,vars[0],vars[1])
+                self.addRelation(factName,vars[1],vars[0])
             else: self.addRelation(factName,factArgs[0],factArgs[1])
         else: print('Error: to many arguments in facts')
             
@@ -64,8 +68,18 @@ class Prolog:
         answer = self.parseQuestion(conditionCondition)
         pairs = None
         if 'exists' in formulaCondition:
-            formulaCondition = formulaCondition.replace('exists','')
+            formulaCondition = formulaCondition.replace(',exists','*')
+            #print(formulaCondition)
+            existarr=formulaCondition.split('*')
+            #print(existarr)
+            existarr[0] = formulaCondition.replace('exists','')
+            formulaCondition = formulaCondition.replace('exists', '')
+            #print('___')
             formulaCondition = formulaCondition[1:-1]
+            #print(existarr)
+            for tmp in range(existarr.__len__()):
+                existarr[tmp]=existarr[tmp][1:-1]
+            #print(existarr)
             if debug: print('[addFormula] condition2: {}'.format(formulaCondition))
             formulaCondition = formulaCondition.split(':')
             vars = formulaCondition[0].split(',')
@@ -134,8 +148,7 @@ if __name__ == '__main__':
 
     if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
     if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
+    #if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
+    #if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
+    #if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
     if debug: print ('[main] {}'.format(prolog.relations))
-    
