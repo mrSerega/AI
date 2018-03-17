@@ -138,4 +138,3 @@ if __name__ == '__main__':
     # if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
     # if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
     # if debug: print ('[main] {}'.format(prolog.relations))
-    print (prolog.relations['Q'].storage)
