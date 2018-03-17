@@ -13,7 +13,7 @@ class Prolog:
     def parseLine(self, line):
         line = line.replace(' ','')
         if len(line) < 1: return 
-        if line[0] == '#': return
+        if line[0] == '#': return 
         if line[0] == '?': return self.parseQuestion(line[1:])
         if ('->') in line: return self.addFormula(line)
         return self.addFact(line)
@@ -28,7 +28,7 @@ class Prolog:
         elif len(questionArguments) == 2: return self.getAnswer(questionName, questionArguments[0], questionArguments[1], vars)
         else: print('Error: to many arguments in question')
     
-    def addFact(self, fact, vars = []):
+    def addFact(self, fact, vars = None):
         factLine = fact.split('(')
         factName = factLine[0]
         factValue = factLine[1].split(')')[0]
@@ -36,10 +36,10 @@ class Prolog:
         numOfArgs = len(factArgs)
         if(numOfArgs == 0): print('Error: no arguments in fact')
         elif(numOfArgs == 1):
-            if vars: self.addRelation(factName,vars[0],vars[0])
+            if vars: self.addRelation(factName,vars[factArgs[0]],vars[factArgs[0]])
             else: self.addRelation(factName,factArgs[0],factArgs[0])
         elif(numOfArgs == 2):
-            if vars: self.addRelation(factName,vars[0],vars[1])
+            if vars: self.addRelation(factName,vars[factArgs[0]],vars[factArgs[1]])
             else: self.addRelation(factName,factArgs[0],factArgs[1])
         else: print('Error: to many arguments in facts')
             
@@ -86,7 +86,7 @@ class Prolog:
         if debug: print ('[addFormula] results2: {}'.format(results))
         for result in results:
             for pair in pairs:
-                self.addFact(result, pair)
+                self.addFact(result, {vars[0]:pair[0], vars[-1]: pair[1]})
         # for i, var in enumerate(formulaVars):
         #     var = answer[i]
         # results = formulaResult.split(',')
@@ -132,10 +132,10 @@ if __name__ == '__main__':
         else: print(prolog.parseLine(line))
 
 
-    if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
-    if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
-    if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
-    if debug: print ('[main] {}'.format(prolog.relations))
-    
+    # if debug: print ('[main] {}'.format(prolog.relations['P'].storage))  
+    # if debug: print ('[main] {}'.format(prolog.relations['P'].isConnected("y","y")))
+    # if debug: print ('[main] {}'.format(prolog.getAnswer('P','x',"'y'",['x'])))
+    # if debug: print ('[main] {}'.format(prolog.getAnswer('P',"'x'",'y',['y'])))
+    # if debug: print ('[main] {}'.format(prolog.getAnswer('P','x','y',['x','y'])))
+    # if debug: print ('[main] {}'.format(prolog.relations))
+    print (prolog.relations['Q'].storage)

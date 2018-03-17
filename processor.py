@@ -1,11 +1,12 @@
 class Graph:
 
-	storage = dict()
+	storage = None
 
-	costs = dict()
+	costs = None
 
 	def __init__(self):
-		# print ('kek')
+		self.storage = dict()
+		self.const = dict()
 		pass
 
 	def addNode(self, nodeName):
