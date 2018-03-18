@@ -1,7 +1,6 @@
 import processor
 
 debug = False
-
 class Prolog:
     
     relations = dict()

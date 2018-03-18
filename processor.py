@@ -2,11 +2,11 @@ class Graph:
 
 	storage = None
 
-	costs = None
+	# costs = None
 
 	def __init__(self):
 		self.storage = dict()
-		self.const = dict()
+		self.cost = dict()
 		pass
 
 	def addNode(self, nodeName):
@@ -14,15 +14,16 @@ class Graph:
 			self.storage[nodeName]
 		except:
 			self.storage[nodeName] = set()
+			# self.costs[nodeName] = set()
 
 	def addEdge(self, firstNode, secondNode, cost = 0, bi=False):
 		self.addNode(firstNode)
 		self.addNode(secondNode)
 		self.storage[firstNode].add(secondNode)
-		self.costs[(firstNode,secondNode)] = cost
+		# self.costs[(firstNode,secondNode)] = cost
 		if bi:
 			self.storage[secondNode].add(firstNode)
-			self.costs[(secondNode,firstNode)] = cost
+			# self.costs[(secondNode,firstNode)] = cost
 
 	def show(self):
 		print (self.storage)
