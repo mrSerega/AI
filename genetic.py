@@ -6,11 +6,11 @@ import sys
 plt.ion()
 
 #config  here
-num_of_islands = 5
+num_of_islands = 1
 limit = 100
 number = 100
 exit_num = 100000
-population_number = 2000
+population_number = 300
 mutate_precent = 0.10 
 
 def get_random_point():
@@ -100,12 +100,12 @@ while (True):
                             )
         populations[pop] = select(populations[pop])
 
-        if generation % 100 == 1:
-            plt.clf()
-            plt.plot([el[0] for el in populations[0][0]],[el[1] for el in populations[0][0]]) 
-            plt.show()
-            plt.pause(0.1)
-        # print (len(population))
+        # if generation % 100 == 1:
+        #     plt.clf()
+        #     plt.plot([el[0] for el in populations[0][0]],[el[1] for el in populations[0][0]]) 
+        #     plt.show()
+        #     plt.pause(0.1)
+        # # print (len(population))
         print('gen {}: pop: {}: {}'.format(generation,pop,get_cost(populations[pop][0])))
 
 print ('done!')
