@@ -1,1 +1,17 @@
 https://github.com/mrSerega/AI
+
+exists (x: F(x))
+#проверяем на не симметричность
+?Q('a2','a1')
+Q('a2','a3')
+Q('a4','a1')
+?Q('a3','a3')
+exists(x,y : Q(x,y)) -> Q(y,x)
+exists(x: Q(x,x)) -> R(x)
+#проверка отработки exists
+?P('a1')
+?P('a5')
+?Q('a2','a1')
+?R('a3')
+?R('a1')
+?Q('a3','a3')

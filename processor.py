@@ -27,7 +27,7 @@ class Graph:
 
 	def show(self):
 		print (self.storage)
-		print (self.costs)
+		# print (self.costs)
 
 	def showEdges(self):
 		for key, value in self.storage.items():
@@ -43,7 +43,7 @@ class Graph:
 				except:
 					pass
 		except:
-			pirnt ('unknown node')
+			print ('unknown node')
 
 	def deleteEdge(self, firstNode, secondNode, bi=False):
 		try:
@@ -68,6 +68,7 @@ class Graph:
 	
 	def BFS(self, firstNode, secondNode, marks):
 		if secondNode in self.storage[firstNode]: return True
+		return False # транзитивность
 		marks.append(firstNode)
 		for node in self.storage[firstNode]:
 			if node not in marks: return self.BFS(node, secondNode, marks)
